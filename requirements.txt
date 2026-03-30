@@ -1,0 +1,35 @@
+# Data ingestion
+requests>=2.31.0
+fredapi>=0.5.1
+
+# Data processing
+pandas>=2.1.0
+numpy>=1.24.0
+
+# Validation
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Visualisation & Dashboard
+plotly>=5.18.0
+dash>=2.14.0
+dash-bootstrap-components>=1.5.0
+
+# Analysis & Nowcasting
+statsmodels>=0.14.0
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# Pipeline scheduling
+apscheduler>=3.10.0
+
+# Utilities
+python-dotenv>=1.0.0
+loguru>=0.7.0
+
+# Dev / Testing
+pytest>=7.4.0
+jupyter>=1.0.0
+nbformat>=5.9.0
+nbconvert>=7.0.0
+pyarrow>=14.0.0
