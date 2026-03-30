@@ -16,103 +16,113 @@ This project answers that in three parts:
 
 ---
 
-## Files — What's Used and What Isn't
+## Project Structure
 
 ```
 algebris-case-study/
 │
 ├── notebooks/
-│   ├── analysis.ipynb        ✅ MAIN DELIVERABLE — open this in Jupyter
-│   └── analysis.py           ⚠️  OLD VERSION — superseded by analysis.ipynb, ignore
+│   ├── analysis.ipynb        # Main deliverable — fully executed, open this in Jupyter
+│   └── analysis.py           # Jupytext plain-text mirror of the notebook
 │
-├── src/                      ✅ All files here are active and used
-│   ├── config.py             — API URLs, file paths, FRED key config (reads from .env)
-│   ├── data_ingestion.py     — Fetches Truflation + FRED CPI + recession data
-│   ├── transformations.py    — Cleans data, computes YoY %, aligns monthly
-│   ├── nowcast.py            — Correlation, Granger causality, nowcasting model
-│   ├── dashboard.py          — Plotly Dash interactive dashboard
-│   ├── utils.py              — Retry logic, logging, Parquet/CSV helpers
-│   └── __init__.py           — Package marker
+├── src/
+│   ├── config.py             # API URLs, file paths, FRED key (reads from .env)
+│   ├── data_ingestion.py     # Fetches Truflation + FRED CPI + recession data
+│   ├── transformations.py    # Cleans data, computes YoY %, aligns monthly
+│   ├── nowcast.py            # Correlation, Granger causality, nowcasting model
+│   ├── dashboard.py          # Plotly Dash interactive dashboard
+│   ├── utils.py              # Retry logic, logging, Parquet/CSV helpers
+│   └── __init__.py
 │
 ├── tests/
-│   └── test_transformations.py  ✅ Unit tests for the transformation layer
+│   └── test_transformations.py  # Unit tests for the transformation layer
 │
-├── data/
-│   ├── raw/                  — Raw API responses saved as Parquet (auto-created)
-│   └── processed/            — Cleaned, aligned datasets (auto-created)
-│
-├── run_pipeline.py           ✅ CLI — run the pipeline, launch dashboard, or schedule
-├── requirements.txt          ✅ Python dependencies
-├── .env                      ✅ Your API keys (FRED key lives here)
-├── .gitignore                ✅ Excludes .venv, data/, .env from git
-│
-├── .Rhistory                 ❌ NOT USED — can be deleted (R history file)
-└── Algebris Data Analytics Case Study.docx  — Original brief from Algebris
+├── run_pipeline.py           # CLI entry point — pipeline, dashboard, scheduler
+├── requirements.txt          # Python dependencies
+├── .env.example              # Template for required environment variables
+└── Algebris Data Analytics Case Study.docx  # Original brief
+```
+
+`data/` is created automatically when the pipeline runs and is not tracked in git.
+
+---
+
+## Setup
+
+### Prerequisites
+- Python 3.10+
+- A free FRED API key — get one at https://fred.stlouisfed.org/docs/api/api_key.html (takes ~1 minute)
+
+### Install
+
+```bash
+# Clone and enter the repo
+git clone https://github.com/ticklestk/Algebris_Case_Study.git
+cd Algebris_Case_Study
+
+# Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate        # macOS / Linux
+# .venv\Scripts\activate         # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up your API key
+cp .env.example .env
+# Open .env and replace 'your_fred_api_key_here' with your actual FRED key
 ```
 
 ---
 
 ## How to Run It
 
-### 1. Setup (one time)
+### View the notebook (main deliverable)
 
-```bash
-# From the project root:
-cd algebris-case-study
-
-# Activate the virtual environment (already set up)
-source .venv/bin/activate
-
-# Your .env already has the FRED API key — nothing to change
-```
-
-### 2. Open the Notebook (main deliverable)
+The notebook is fully pre-executed — all outputs and charts are already embedded. Just open it:
 
 ```bash
 jupyter notebook notebooks/analysis.ipynb
 ```
 
-The notebook is **fully pre-executed** — all outputs and charts are already embedded. You can just open and read it. If you want to re-run it from scratch:
-- Click **Kernel → Restart & Run All** in Jupyter
+To re-run it from scratch: **Kernel → Restart & Run All** in Jupyter.
 
-### 3. Run the Data Pipeline (fetch fresh data)
+### Run the data pipeline (fetch fresh data)
 
-This fetches the latest data from both APIs, runs the analysis, and prints the Portfolio Manager commentary:
+Fetches the latest data from both APIs, runs the full analysis, and prints the Portfolio Manager commentary:
 
 ```bash
 python run_pipeline.py
 ```
 
-Output saved to:
-- `data/raw/truflation_raw.parquet` — raw Truflation daily data
-- `data/raw/cpi_fred_raw.parquet` — raw FRED CPI data
-- `data/processed/aligned_monthly.parquet` — aligned monthly dataset
-- `data/processed/truflation_daily.parquet` — daily Truflation with YoY
-- `data/processed/walk_forward_results.csv` — nowcast model CV results
+Saves output to:
+- `data/raw/truflation_raw.parquet`
+- `data/raw/cpi_fred_raw.parquet`
+- `data/processed/aligned_monthly.parquet`
+- `data/processed/truflation_daily.parquet`
+- `data/processed/walk_forward_results.csv`
 
-### 4. Launch the Interactive Dashboard
+### Launch the interactive dashboard
 
 ```bash
 python run_pipeline.py --dashboard
 ```
 
-Then open **http://localhost:8050** in your browser.
-
-The dashboard shows:
+Open **http://localhost:8050** in your browser. The dashboard includes:
 - CPI vs Truflation YoY % on the same axis with NBER recession shading
 - Spread chart (Truflation − CPI divergence)
 - Date-range slider for zooming
 - Rolling 12-month correlation chart
-- Summary stats cards (latest readings, correlation, MAE)
+- Summary statistics cards
 
-### 5. Run on a Daily Schedule (optional)
+### Run on a daily schedule
 
 ```bash
 python run_pipeline.py --schedule
-# Runs automatically every day at 08:00 UTC — press Ctrl+C to stop
+# Runs automatically every day at 08:00 UTC — Ctrl+C to stop
 ```
 
-### 6. Run Tests
+### Run tests
 
 ```bash
 python -m pytest tests/ -v
@@ -122,15 +132,15 @@ python -m pytest tests/ -v
 
 ## Data Sources
 
-| Source | Series | Frequency | How fetched |
+| Source | Series | Frequency | Notes |
 |---|---|---|---|
-| [Truflation](https://truflation.com) | US CPI Inflation Index (YoY %) | Daily | REST API — no key needed, requires `User-Agent` header |
-| [FRED](https://fred.stlouisfed.org) | CPIAUCSL — CPI-U All Items, SA | Monthly | `fredapi` Python library — free API key required |
-| [FRED](https://fred.stlouisfed.org) | USREC — NBER Recession Indicator | Monthly | Same as above — used for recession shading on charts |
+| [Truflation](https://truflation.com) | US CPI Inflation Index (YoY %) | Daily | No API key needed |
+| [FRED](https://fred.stlouisfed.org) | CPIAUCSL — CPI-U All Items, SA | Monthly | Free API key required |
+| [FRED](https://fred.stlouisfed.org) | USREC — NBER Recession Indicator | Monthly | Used for recession shading |
 
 ---
 
-## Key Results (as of latest run)
+## Key Results
 
 | Metric | Value |
 |---|---|
@@ -155,23 +165,21 @@ FRED API ────────┘         │                      │       
                                              dashboard.py ──► http://localhost:8050
 ```
 
-**Step by step:**
-
-1. `data_ingestion.py` fetches both APIs with retry logic and saves raw Parquet files
-2. `transformations.py` computes YoY % for CPI (12-month lag on index level), forward-fills Truflation gaps, resamples Truflation to monthly, and aligns both on month-start dates
-3. `nowcast.py` runs correlation analysis, Granger causality test, and a walk-forward linear regression model — all using only data available at prediction time (no lookahead)
-4. `dashboard.py` loads the processed data and serves the Dash app
+1. `data_ingestion.py` — fetches both APIs with retry/backoff, validates responses with Pydantic, saves raw Parquet
+2. `transformations.py` — computes YoY % for CPI (12-month lag), forward-fills Truflation gaps, resamples to monthly, aligns on month-start dates
+3. `nowcast.py` — correlation analysis, Granger causality test, walk-forward linear regression (no lookahead bias)
+4. `dashboard.py` — loads processed Parquet and serves the Dash app
 
 ---
 
 ## Design Decisions
 
-**FRED over BLS direct API** — FRED provides a cleaner, more consistent API with useful auxiliary series (recession indicator, inflation expectations). The BLS API has stricter rate limits and less convenient formatting.
+**FRED over BLS direct API** — FRED provides a cleaner API with consistent formatting and includes useful auxiliary series (recession indicator). The BLS API has stricter rate limits and less convenient date formatting.
 
-**Pydantic validation on API responses** — Both ingestion functions validate the raw API response through typed Pydantic models. This catches schema changes early rather than silently producing bad data — important for a pipeline that may run unattended.
+**Pydantic validation on API responses** — Both ingestion functions validate the raw response through typed Pydantic models. This catches schema changes early rather than silently producing bad data — critical for a pipeline that may run unattended.
 
-**Linear regression for the nowcast model** — Deliberately chosen over black-box alternatives (gradient boosting, neural nets) for full explainability. The Portfolio Manager can see exactly what the model is doing from the coefficient table. The features are: current Truflation YoY, CPI lag-1, CPI lag-2, and the lagged Truflation−CPI spread.
+**Linear regression for the nowcast model** — Deliberately chosen over black-box alternatives for full explainability. The Portfolio Manager can read the coefficient table and understand exactly what is driving the prediction. Features: current Truflation YoY, CPI lag-1, CPI lag-2, lagged Truflation−CPI spread.
 
-**Walk-forward expanding-window CV** — The only correct way to validate a time series forecasting model. Train on [0…t−1], predict t, expand. No data leakage by construction. Naive persistence (predict next CPI = last CPI) is used as the hard baseline to beat.
+**Walk-forward expanding-window CV** — The only correct validation approach for a time series forecasting model. Train on [0…t−1], predict t, expand. No data leakage by construction. Naive persistence (predict next CPI = last CPI) is used as the baseline.
 
-**Parquet persistence between stages** — Each pipeline stage saves its output to Parquet. If the API goes down or you want to re-run just the analysis without re-fetching, you can. The dashboard also loads from Parquet rather than hitting the API every time.
+**Parquet persistence between stages** — Each stage saves output to Parquet. If an API is down or you want to re-run analysis without re-fetching, you can. The dashboard loads from Parquet rather than hitting APIs on every page load.
