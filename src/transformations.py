@@ -139,7 +139,6 @@ def align_monthly(
         merged["recession"] = merged["recession"].fillna(0).astype(int)
 
     logger.info(f"Aligned monthly dataset: {len(merged)} rows, columns={list(merged.columns)}")
-    save_parquet(merged, "aligned_monthly")
     return merged
 
 
@@ -174,7 +173,8 @@ def transform_all(
 
     aligned = align_monthly(truflation_monthly, cpi, recession)
 
-    # Persist daily truflation for the dashboard's granular view
+    # Persist processed data
+    save_parquet(aligned, "aligned_monthly")
     save_parquet(truflation_daily, "truflation_daily")
     save_parquet(cpi, "cpi_transformed")
 
