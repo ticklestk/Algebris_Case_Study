@@ -19,6 +19,7 @@ from dash import dcc, html
 from plotly.subplots import make_subplots
 
 from src.utils import load_parquet
+from src.nowcast import run_full_analysis
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -305,7 +306,10 @@ def create_app() -> dash.Dash:
     recession = load_parquet("recession_raw", subdir="raw")
     stats    = compute_summary_stats(aligned)
 
-    # Build all charts upfront
+    # Run analysis and build charts
+    analysis    = run_full_analysis(aligned)
+    commentary  = analysis["commentary"]
+
     main_fig    = build_main_chart(aligned, recession_df=recession)
     corr_fig    = build_correlation_chart(aligned)
     scatter_fig = build_scatter_chart(aligned)
@@ -352,7 +356,7 @@ def create_app() -> dash.Dash:
         dbc.Row(dbc.Col(dcc.Graph(
             id="main-chart",
             figure=main_fig,
-            config={"displayModeBar": True, "scrollZoom": True, "modeBarButtonsToRemove": ["lasso2d","select2d"]},
+            config={"displayModeBar": True, "scrollZoom": False, "modeBarButtonsToRemove": ["lasso2d","select2d"]},
         ))),
 
         # ── Section 2: Correlation analysis ──────────────────────
@@ -377,6 +381,22 @@ def create_app() -> dash.Dash:
             "No lookahead bias by construction.",
         ),
         dbc.Row(dbc.Col(dcc.Graph(id="nowcast-chart", figure=nowcast_fig))),
+
+        # ── Section 4: PM Commentary ─────────────────────────────
+        _section_header(
+            "4. Portfolio Manager Commentary",
+            "Written assessment based on the latest available data. "
+            "Refreshed each time the pipeline runs.",
+        ),
+        dbc.Row(dbc.Col(
+            dbc.Card(dbc.CardBody(
+                dcc.Markdown(
+                    commentary,
+                    style={"fontSize": "0.92em", "lineHeight": "1.7"},
+                )
+            ), className="shadow-sm border-0"),
+            className="mb-4",
+        )),
 
         # ── Footer ────────────────────────────────────────────────
         html.Hr(className="mt-4"),
