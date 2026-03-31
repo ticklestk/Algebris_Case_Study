@@ -188,3 +188,25 @@ FRED API ────────┘         │                      │       
 **Walk-forward expanding-window CV** — The only correct validation approach for a time series forecasting model. Train on [0…t−1], predict t, expand. No data leakage by construction. Naive persistence (predict next CPI = last CPI) is used as the baseline.
 
 **Parquet persistence between stages** — Each stage saves output to Parquet. If an API is down or you want to re-run analysis without re-fetching, you can. The dashboard loads from Parquet rather than hitting APIs on every page load.
+
+---
+
+## AI Tools Disclosure
+
+Claude (Anthropic) was used as a coding assistant throughout this project:
+
+| Area | How AI was used |
+|---|---|
+| Project scaffolding | Suggested modular `src/` package structure, `pydantic-settings` config pattern, retry decorator boilerplate |
+| API integration | Helped debug Truflation API (403 header fix, new response format parsing, SSL cert issue on macOS) |
+| Validation logic | Reviewed walk-forward CV for lookahead bias |
+| Documentation | Assisted with docstrings and notebook narrative |
+
+**What was not delegated to AI:**
+- Feature selection for the nowcasting model
+- Choice of linear regression for explainability over black-box alternatives
+- Analytical interpretation of results and PM commentary framing
+- Decision to use Granger causality as the formal predictive-power test
+- All data quality and alignment decisions
+
+All code was reviewed, tested, and adapted to the specific data characteristics encountered. Full disclosure is also included in Section 6 of `notebooks/analysis.ipynb`.
