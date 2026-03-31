@@ -427,10 +427,11 @@ def create_app() -> dash.Dash:
     return app
 
 
-def run_dashboard(debug=False, port=8050):
+def run_dashboard(debug=False, port=None):
     """Launch the dashboard server."""
+    import os
     app = create_app()
-    app.run(debug=debug, port=port)
+    app.run(debug=debug, port=int(os.environ.get("PORT", port or 8050)))
 
 
 if __name__ == "__main__":
