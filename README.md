@@ -105,7 +105,7 @@ Saves output to:
 
 A hosted version is available at **https://algebris-case-study.onrender.com**
 
-> **Note:** The app is hosted on Render's free tier, which spins down after ~15 minutes of inactivity. The first visit after a period of inactivity may take **30–60 seconds** to load — this is normal. Subsequent requests are instant.
+> **Note:** The app is hosted on Render's free tier, which spins down after ~15 minutes of inactivity. The first visit after a period of inactivity may take **60++ seconds** to load — this is normal. Subsequent requests are instant.
 
 ### Launch the interactive dashboard locally
 
