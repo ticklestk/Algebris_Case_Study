@@ -62,7 +62,8 @@ def run_dashboard() -> None:
 
     setup_logging("INFO")
     logger.info("Launching dashboard on http://localhost:8050")
-    _run(debug=True)
+    import os
+    _run(debug=os.environ.get("DASH_DEBUG", "false").lower() == "true")
 
 
 def main() -> None:
