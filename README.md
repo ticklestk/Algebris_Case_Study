@@ -147,6 +147,10 @@ python -m pytest tests/ -v
 
 ## Key Results
 
+Truflation and official CPI YoY are strongly correlated (ρ = 0.945) with a **1-month lead** — today's Truflation reading correlates most strongly with CPI published next month. Granger causality is confirmed (p < 0.0001), meaning Truflation adds predictive information beyond CPI's own history. A linear nowcast model improves **+42% over a naive baseline** in walk-forward out-of-sample testing, with directional accuracy of 72.5%.
+
+Current signal (as of February 2026): Truflation at 0.94% is **1.72pp below** CPI at 2.66% — the widest negative spread on record — pointing to downside risk on the next print. Model nowcast for March 2026: **2.54% YoY**.
+
 | Metric | Value |
 |---|---|
 | Contemporaneous correlation | **0.945** |
@@ -155,7 +159,10 @@ python -m pytest tests/ -v
 | Nowcast model MAE | **0.158 pp** |
 | Naive baseline MAE | **0.274 pp** |
 | Improvement over baseline | **+42%** |
+| Directional accuracy | **72.5%** |
 | March 2026 CPI nowcast | **2.54% YoY** |
+
+For full analysis including regime correlation breakdown, signal decomposition, historical divergence episodes, and error percentiles — see [`FINDINGS_DETAILED.md`](FINDINGS_DETAILED.md). The written PM commentary is in Section 4 of [`notebooks/analysis.ipynb`](notebooks/analysis.ipynb) and rendered live on the dashboard.
 
 ---
 
