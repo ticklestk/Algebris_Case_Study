@@ -135,7 +135,7 @@ def _parse_truflation_response(raw: dict | list) -> list[dict]:
 #  FRED CPI data fetching
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-@retry_on_failure(exceptions=(Exception,))
+@retry_on_failure(exceptions=(requests.RequestException, ConnectionError, ValueError))
 def fetch_cpi_from_fred() -> pd.DataFrame:
     """Fetch the official US CPI-U (All Items, Seasonally Adjusted) from FRED.
 
@@ -160,7 +160,7 @@ def fetch_cpi_from_fred() -> pd.DataFrame:
     return df
 
 
-@retry_on_failure(exceptions=(Exception,))
+@retry_on_failure(exceptions=(requests.RequestException, ConnectionError, ValueError))
 def fetch_recession_indicator() -> pd.DataFrame:
     """Fetch NBER recession indicator from FRED (for dashboard shading).
 

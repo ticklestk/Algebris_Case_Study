@@ -18,6 +18,7 @@ import plotly.express as px
 from dash import dcc, html
 from plotly.subplots import make_subplots
 
+from src.config import settings
 from src.utils import load_parquet
 from src.nowcast import run_full_analysis
 
@@ -98,9 +99,23 @@ def build_main_chart(aligned_df, recession_df=None):
 
     fig.update_layout(
         **CHART_LAYOUT,
-        height=560,
+        height=600,
         title=dict(text="US Inflation: Official CPI vs Truflation Alternative Data", font=dict(size=15)),
-        xaxis=dict(type="date", range=[TRUF_START, valid.index.max().strftime("%Y-%m-%d")]),
+        xaxis=dict(
+            type="date",
+            range=[TRUF_START, valid.index.max().strftime("%Y-%m-%d")],
+            rangeselector=dict(
+                buttons=[
+                    dict(count=1, label="1Y", step="year", stepmode="backward"),
+                    dict(count=3, label="3Y", step="year", stepmode="backward"),
+                    dict(count=5, label="5Y", step="year", stepmode="backward"),
+                    dict(step="all", label="All"),
+                ],
+                bgcolor="#f0f0f0",
+                activecolor="#1f77b4",
+            ),
+            rangeslider=dict(visible=True, thickness=0.05),
+        ),
         xaxis2=dict(type="date"),
         bargap=0.1,
     )
@@ -184,7 +199,7 @@ def build_scatter_chart(aligned_df):
 def build_nowcast_chart():
     """Walk-forward nowcast vs actual CPI — loaded from saved CSV."""
     try:
-        wf = pd.read_csv("data/processed/walk_forward_results.csv", index_col="date", parse_dates=True)
+        wf = pd.read_csv(settings.processed_data_dir / "walk_forward_results.csv", index_col="date", parse_dates=True)
     except FileNotFoundError:
         return go.Figure().update_layout(title="Nowcast data not found — run the pipeline first")
 
