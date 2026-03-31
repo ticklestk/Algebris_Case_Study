@@ -212,7 +212,6 @@ Claude (Anthropic) was used as a coding assistant throughout this project:
 **What was not delegated to AI:**
 - Feature selection for the nowcasting model
 - Choice of linear regression for explainability over black-box alternatives
-- Analytical interpretation of results and PM commentary framing
 - Decision to use Granger causality as the formal predictive-power test
 - All data quality and alignment decisions
 
