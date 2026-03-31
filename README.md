@@ -22,8 +22,7 @@ This project answers that in three parts:
 algebris-case-study/
 │
 ├── notebooks/
-│   ├── analysis.ipynb        # Main deliverable — fully executed, open this in Jupyter
-│   └── analysis.py           # Jupytext plain-text mirror of the notebook
+│   └── analysis.ipynb        # Main deliverable — fully executed, open this in Jupyter
 │
 ├── src/
 │   ├── config.py             # API URLs, file paths, FRED key (reads from .env)
@@ -102,7 +101,13 @@ Saves output to:
 - `data/processed/truflation_daily.parquet`
 - `data/processed/walk_forward_results.csv`
 
-### Launch the interactive dashboard
+### Live demo
+
+A hosted version is available at **https://algebris-case-study.onrender.com**
+
+> **Note:** The app is hosted on Render's free tier, which spins down after ~15 minutes of inactivity. The first visit after a period of inactivity may take **30–60 seconds** to load — this is normal. Subsequent requests are instant.
+
+### Launch the interactive dashboard locally
 
 ```bash
 python run_pipeline.py --dashboard
