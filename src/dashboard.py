@@ -415,12 +415,15 @@ def create_app() -> dash.Dash:
 
         # ── Footer ────────────────────────────────────────────────
         html.Hr(className="mt-4"),
-        dbc.Row(dbc.Col(html.P(
-            "Data sources: FRED (CPIAUCSL, USREC) · Truflation API (truflation.com) · "
-            "NBER recession dates. Prepared for Algebris Data Analytics Case Study.",
-            className="text-muted text-center mb-3",
-            style={"fontSize": "0.8em"},
-        ))),
+        dbc.Row(dbc.Col(html.P([
+            "For full analysis including regime correlations, signal decomposition, and error percentiles see ",
+            html.A(
+                "FINDINGS_DETAILED.md",
+                href="https://github.com/ticklestk/Algebris_Case_Study/blob/main/FINDINGS_DETAILED.md",
+                target="_blank",
+            ),
+            " · Data: FRED (CPIAUCSL, USREC) · Truflation API · NBER recession dates.",
+        ], className="text-muted text-center mb-3", style={"fontSize": "0.8em"}))),
 
     ], fluid=True, style={"maxWidth": "1400px"})
 
