@@ -300,7 +300,7 @@ def _stat_card(title, value, subtitle=""):
 def _section_header(title, description):
     return dbc.Row(dbc.Col([
         html.H5(title, className="mb-1 mt-4 fw-semibold"),
-        html.P(description, className="text-muted mb-2", style={"fontSize": "1em"}),
+        html.P(description, className="mb-2", style={"fontSize": "1.1em"}),
         html.Hr(className="mt-1 mb-3"),
     ]))
 
